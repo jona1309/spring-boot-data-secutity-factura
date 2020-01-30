@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http:www.thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+<body>
+
+	<header th:replace="layout/layout :: header"></header>
+
+	<div class="container py-4">
+
+		<div class="card bg-light">
+			<div class="card-header" th:text="${titulo}"></div>
+			<div class="card-body">
+				<h4 class="card-title">
+					<a class="btn btn-light btn-xs"
+						th:href="@{'/ver/' + factura.cliente.id}">&laquo; volver</a>
+				</h4>
+
+				<div class="form-group row" th:object="${factura}" th:remove="tag">
+					<ul class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+						<li th:each="error: ${#fields.errors('*')}" th:text="${error}"></li>
+					</ul>
+				</div>
+
+				<form th:action="@{/factura/form}" th:object="${factura}"
+					method="post">
+
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label" for="descripcion">Cliente</label>
+						<div class="col-sm-6">
+							<input class="form-control"
+								th:value="${factura.cliente.nombre + ' ' + factura.cliente.paterno}"
+								disabled="disabled" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label" for="descripcion">Descripci&oacute;n</label>
+						<div class="col-sm-6">
+							<input class="form-control" type="text" th:field="*{descripcion}"
+								th:errorclass="'form-control is-invalid'" />
+							<div class="invalid-feedback"
+								th:if="${#fields.hasErrors('descripcion')}"
+								th:errors="*{descripcion}"></div>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label" for="observacion">Observaci&oacute;n</label>
+						<div class="col-sm-6">
+							<textarea class="form-control" th:field="*{observacion}"
+								th:errorclass="'form-control alert-danger'"></textarea>
+							<small class="form-text text-danger"
+								th:if="${#fields.hasErrors('observacion')}"
+								th:errors="*{observacion}"></small>
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label" for="buscar_producto">Buscar</label>
+						<div class="col-sm-6">
+							<input class="form-control" type="text" name="buscar_producto"
+								id="buscar_producto" />
+						</div>
+					</div>
+
+					<table th:replace="factura/plantilla-items :: itemsFactura"></table>
+
+					<table id="cargarItemsProductos"
+						class="table table-sm table-striped table-hover">
+						<thead class="thead-dark">
+							<tr>
+								<th>Nombre</th>
+								<th>Precio</th>
+								<th>Cantidad</th>
+								<th>Total</th>
+								<th>Eliminar</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+
+					<h5>
+						<span class="badge badge-secondary" id="gran_total">0</span>
+					</h5>
+
+					<div class="form-group row">
+						<div class="col-sm-6">
+							<input class="btn btn-secondary" type="submit"
+								value="Guardar Factura" />
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<footer th:replace="layout/layout :: footer"></footer>
+	<script th:replace="factura/js/autocomplete-productos :: javascript"></script>
+</body>
+</html>
